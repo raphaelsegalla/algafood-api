@@ -43,7 +43,6 @@ public class CozinhaController {
         BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
 
         return cadastroCozinhaService.salvar(cozinhaAtual);
-
     }
 
     @DeleteMapping("/{cozinhaId}")
