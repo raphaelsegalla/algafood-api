@@ -1,13 +1,13 @@
 package com.algaworks.algafood.api.controller;
 
-import com.algaworks.algafood.api.model.CozinhaModel;
+import com.algaworks.algafood.api.assembler.RestauranteInputAssembler;
+import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
+import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
 import com.algaworks.algafood.api.model.RestauranteModel;
-import com.algaworks.algafood.api.model.input.CozinhaIdInput;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
-import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
@@ -29,7 +29,6 @@ import javax.validation.Valid;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -44,23 +43,32 @@ public class RestauranteController {
     @Autowired
     private SmartValidator validator;
 
+    @Autowired
+    private RestauranteModelAssembler restauranteModelAssembler;
+
+    @Autowired
+    private RestauranteInputDisassembler restauranteInputDisassembler;
+
+    @Autowired
+    private RestauranteInputAssembler restauranteInputAssembler;
+
     @GetMapping
     public List<RestauranteModel> listar() {
-        return toCollectionModel(restauranteRepository.findAll());
+        return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
     }
 
     @GetMapping("/{restauranteId}")
     public RestauranteModel buscar(@PathVariable Long restauranteId) {
         Restaurante restaurante = cadastroRestauranteService.buscarOuFalhar(restauranteId);
-        return toModel(restaurante);
+        return restauranteModelAssembler.toModel(restaurante);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public RestauranteModel adicionar(@RequestBody @Valid RestauranteInput restauranteInput) {
         try {
-            Restaurante restaurante = toDomainObject(restauranteInput);
-            return toModel(cadastroRestauranteService.salvar(restaurante));
+            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
+            return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restaurante));
         } catch (CozinhaNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -70,13 +78,15 @@ public class RestauranteController {
     public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteInput) {
 
         try {
-            Restaurante restaurante = toDomainObject(restauranteInput);
+//            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
 
             Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
-            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamentos", "endereco", "dataCadastro", "produtos");
+            restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
 
-            return toModel(cadastroRestauranteService.salvar(restauranteAtual));
+//            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamentos", "endereco", "dataCadastro", "produtos");
+
+            return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
@@ -89,7 +99,7 @@ public class RestauranteController {
         merge(campos, restauranteAtual, request);
         validate(restauranteAtual, "restaurante");
 
-        return atualizar(restauranteId, toModelInput(restauranteAtual));
+        return atualizar(restauranteId, restauranteInputAssembler.toModelInput(restauranteAtual));
     }
 
     private void validate(Restaurante restaurante, String objetcName) {
@@ -133,49 +143,4 @@ public class RestauranteController {
             throw new HttpMessageNotReadableException(e.getMessage(), rootCause, servletServerHttpRequest);
         }
     }
-
-    private RestauranteModel toModel(Restaurante restaurante) {
-        CozinhaModel cozinhaModel = new CozinhaModel();
-        cozinhaModel.setId(restaurante.getCozinha().getId());
-        cozinhaModel.setNome(restaurante.getCozinha().getNome());
-
-        RestauranteModel restauranteModel = new RestauranteModel();
-        restauranteModel.setId(restaurante.getId());
-        restauranteModel.setNome(restaurante.getNome());
-        restauranteModel.setTaxaFrete(restaurante.getTaxaFrete());
-        restauranteModel.setCozinha(cozinhaModel);
-        return restauranteModel;
-    }
-
-    private List<RestauranteModel> toCollectionModel(List<Restaurante> restaurantes) {
-        return restaurantes.stream()
-                .map(restaurante -> toModel(restaurante))
-                .collect(Collectors.toList());
-    }
-
-    private Restaurante toDomainObject(RestauranteInput restauranteInput) {
-        Restaurante restaurante = new Restaurante();
-        restaurante.setNome(restauranteInput.getNome());
-        restaurante.setTaxaFrete(restauranteInput.getTaxaFrete());
-
-        Cozinha cozinha = new Cozinha();
-        cozinha.setId(restauranteInput.getCozinha().getId());
-
-        restaurante.setCozinha(cozinha);
-
-        return restaurante;
-    }
-
-    private RestauranteInput toModelInput(Restaurante restaurante) {
-        RestauranteInput restauranteInput = new RestauranteInput();
-        restauranteInput.setNome(restaurante.getNome());
-        restauranteInput.setTaxaFrete(restaurante.getTaxaFrete());
-
-        CozinhaIdInput cozinhaIdInput = new CozinhaIdInput();
-
-        restauranteInput.setCozinha(cozinhaIdInput);
-
-        return restauranteInput;
-    }
-
 }
