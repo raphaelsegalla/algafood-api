@@ -1,16 +1,9 @@
 package com.algaworks.algafood.domain.model;
 
-import com.algaworks.algafood.core.validation.Groups;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import javax.persistence.*;
-import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.groups.ConvertGroup;
-import javax.validation.groups.Default;
 
 @Entity
 @Data
@@ -22,14 +15,14 @@ public class Cidade {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
+//    @NotBlank
     @Column(nullable = false)
     private String nome;
 
-    @JsonIgnoreProperties(value = "nome", allowGetters = true)
-    @Valid
-    @ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
-    @NotNull
+//    @JsonIgnoreProperties(value = "nome", allowGetters = true)
+//    @Valid
+//    @ConvertGroup(from = Default.class, to = Groups.EstadoId.class)
+//    @NotNull
     @ManyToOne
     @JoinColumn(name = "estado_id", nullable = false)
     private Estado estado;
