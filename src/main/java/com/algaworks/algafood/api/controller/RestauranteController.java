@@ -6,6 +6,7 @@ import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
 import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
 import com.algaworks.algafood.core.validation.ValidacaoException;
+import com.algaworks.algafood.domain.exception.CidadeNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.NegocioException;
 import com.algaworks.algafood.domain.model.Restaurante;
@@ -86,7 +87,7 @@ public class RestauranteController {
 //            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamentos", "endereco", "dataCadastro", "produtos");
 
             return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restauranteAtual));
-        } catch (CozinhaNaoEncontradoException e) {
+        } catch (CozinhaNaoEncontradoException | CidadeNaoEncontradoException e) {
             throw new NegocioException(e.getMessage());
         }
     }

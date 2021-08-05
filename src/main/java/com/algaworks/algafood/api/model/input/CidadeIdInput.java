@@ -5,9 +5,9 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 
-@Setter
 @Getter
-public class EstadoIdInput {
+@Setter
+public class CidadeIdInput {
 
     @NotNull
     private Long id;
