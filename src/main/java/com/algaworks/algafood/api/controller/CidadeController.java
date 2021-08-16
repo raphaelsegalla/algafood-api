@@ -60,8 +60,6 @@ public class CidadeController {
 
             cidadeInputDisassenbler.copyToDomainObject(cidadeInput, cidadeAtual);
 
-//            BeanUtils.copyProperties(cidade, cidadeAtual, "id");
-
             return cidadeModelAssembler.toModel(cadastroCidadeService.salvar(cidadeAtual));
         } catch (EstadoNaoEncontradoException e) {
             throw new NegocioException(e.getMessage(), e);

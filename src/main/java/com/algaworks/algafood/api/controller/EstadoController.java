@@ -53,8 +53,6 @@ public class EstadoController {
 
         estadoInputDisassembler.copyToDomainObject(estadoInput, estadoAtual);
 
-//        BeanUtils.copyProperties(estado, estadoAtual, "id");
-
         return estadoModelAssembler.toModel(cadastroEstadoService.salvar(estadoAtual));
     }
 
