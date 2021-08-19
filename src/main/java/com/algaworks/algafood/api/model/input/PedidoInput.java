@@ -27,6 +27,6 @@ public class PedidoInput {
     @Valid
     @Size(min = 1)
     @NotNull
-    private List<ItemPedidoInput> itensPedido;
+    private List<ItemPedidoInput> itens;
 
 }
