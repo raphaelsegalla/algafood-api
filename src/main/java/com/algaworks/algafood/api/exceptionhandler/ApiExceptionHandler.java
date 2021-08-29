@@ -4,6 +4,7 @@ import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.EntidadeEmUsoException;
 import com.algaworks.algafood.domain.exception.EntidadeNaoEncontradaException;
 import com.algaworks.algafood.domain.exception.NegocioException;
+import com.fasterxml.jackson.databind.JsonMappingException.Reference;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.fasterxml.jackson.databind.exc.PropertyBindingException;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -25,9 +26,6 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.fasterxml.jackson.databind.JsonMappingException.Reference;
-
-import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,13 +50,6 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(detail)
                 .build();
-
-//        Problem problem = Problem.builder()
-//                .status(status.value())
-//                .type("https://algafood.com.br/entidade-nao-encontrada")
-//                .title("Entidade não encontrada")
-//                .detail(ex.getMessage())
-//                .build();
 
         return handleExceptionInternal(ex, problem, new HttpHeaders(), status, request);
     }
@@ -136,6 +127,7 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
         String detail = String.format("A propriedade '%s' recebeu o valor '%s', "
                 + "que é de um tipo inválido. Corrija e informe um valor compatível com o tipo %s.", path, ex.getValue(), ex.getTargetType().getSimpleName());
+
         Problem problem = createProblemBuilder(status, problemType, detail)
                 .userMessage(MSG_ERRO_GENERICA_USUARIO_FINAL)
                 .build();

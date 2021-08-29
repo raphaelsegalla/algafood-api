@@ -5,6 +5,7 @@ import com.algaworks.algafood.api.assembler.RestauranteInputDisassembler;
 import com.algaworks.algafood.api.assembler.RestauranteModelAssembler;
 import com.algaworks.algafood.api.model.RestauranteModel;
 import com.algaworks.algafood.api.model.input.RestauranteInput;
+import com.algaworks.algafood.api.model.view.RestauranteView;
 import com.algaworks.algafood.core.validation.ValidacaoException;
 import com.algaworks.algafood.domain.exception.CidadeNaoEncontradoException;
 import com.algaworks.algafood.domain.exception.CozinhaNaoEncontradoException;
@@ -13,6 +14,7 @@ import com.algaworks.algafood.domain.exception.RestauranteNaoEncontradoException
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -53,9 +55,16 @@ public class RestauranteController {
     @Autowired
     private RestauranteInputAssembler restauranteInputAssembler;
 
+    @JsonView(RestauranteView.Resumo.class)
     @GetMapping
     public List<RestauranteModel> listar() {
         return restauranteModelAssembler.toCollectionModel(restauranteRepository.findAll());
+    }
+
+    @JsonView(RestauranteView.ApenasNome.class)
+    @GetMapping(params = "projecao=apenas-nome")
+    public List<RestauranteModel> listarApenasNomes() {
+        return listar();
     }
 
     @GetMapping("/{restauranteId}")
@@ -79,13 +88,9 @@ public class RestauranteController {
     public RestauranteModel atualizar(@PathVariable Long restauranteId, @RequestBody @Valid RestauranteInput restauranteInput) {
 
         try {
-//            Restaurante restaurante = restauranteInputDisassembler.toDomainObject(restauranteInput);
-
             Restaurante restauranteAtual = cadastroRestauranteService.buscarOuFalhar(restauranteId);
 
             restauranteInputDisassembler.copyToDomainObject(restauranteInput, restauranteAtual);
-
-//            BeanUtils.copyProperties(restaurante, restauranteAtual, "id", "formaPagamentos", "endereco", "dataCadastro", "produtos");
 
             return restauranteModelAssembler.toModel(cadastroRestauranteService.salvar(restauranteAtual));
         } catch (CozinhaNaoEncontradoException | CidadeNaoEncontradoException e) {
