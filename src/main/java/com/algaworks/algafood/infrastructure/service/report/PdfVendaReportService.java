@@ -1,18 +1,16 @@
 package com.algaworks.algafood.infrastructure.service.report;
 
-import java.util.HashMap;
-import java.util.Locale;
-
-import net.sf.jasperreports.engine.JRException;
+import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
+import com.algaworks.algafood.domain.service.VendaQueryService;
+import com.algaworks.algafood.domain.service.VendaReportService;
 import net.sf.jasperreports.engine.JasperExportManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.algaworks.algafood.domain.filter.VendaDiariaFilter;
-import com.algaworks.algafood.domain.service.VendaQueryService;
-import com.algaworks.algafood.domain.service.VendaReportService;
+import java.util.HashMap;
+import java.util.Locale;
 
 @Service
 public class PdfVendaReportService implements VendaReportService {
