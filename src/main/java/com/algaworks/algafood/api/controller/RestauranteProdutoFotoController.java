@@ -50,4 +50,12 @@ public class RestauranteProdutoFotoController {
 
     }
 
+    @GetMapping
+    public FotoProdutoModel buscar(@PathVariable Long restauranteId,
+                                   @PathVariable Long produtoId) {
+        FotoProduto fotoProduto = catalogoFotoProdutoService.buscarOuFalhar(restauranteId, produtoId);
+
+        return fotoProdutoModelAssembler.toModel(fotoProduto);
+    }
+
 }
