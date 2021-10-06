@@ -15,6 +15,7 @@ public class SmtpEnvioEmailService implements EnvioEmailService {
     @Autowired
     private JavaMailSender javaMailSender;
 
+    @Autowired
     private EmailProperties emailProperties;
 
     @Override
