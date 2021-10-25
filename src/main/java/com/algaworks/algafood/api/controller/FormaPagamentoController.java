@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.assembler.FormaPagamentoInputDisassembler;
 import com.algaworks.algafood.api.assembler.FormaPagamentoModelAssembler;
 import com.algaworks.algafood.api.model.FormaPagamentoModel;
 import com.algaworks.algafood.api.model.input.FormaPagamentoInput;
+import com.algaworks.algafood.api.openapi.controller.FormaPagamentoControllerOpenApi;
 import com.algaworks.algafood.domain.model.FormaPagamento;
 import com.algaworks.algafood.domain.repository.FormaPagamentoRepository;
 import com.algaworks.algafood.domain.service.CadastroFormaPagamentoService;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/formas-pagamento")
-public class FormaPagamentoController {
+public class FormaPagamentoController implements FormaPagamentoControllerOpenApi {
 
     @Autowired
     private FormaPagamentoRepository formaPagamentoRepository;
@@ -80,8 +81,7 @@ public class FormaPagamentoController {
 //    }
 
     @GetMapping("/{formaPagamentoId}")
-    public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId,
-                                                      ServletWebRequest request) {
+    public ResponseEntity<FormaPagamentoModel> buscar(@PathVariable Long formaPagamentoId, ServletWebRequest request) {
 
         ShallowEtagHeaderFilter.disableContentCaching(request.getRequest());
 
