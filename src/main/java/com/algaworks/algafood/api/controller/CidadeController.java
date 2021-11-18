@@ -20,9 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
-
 @RestController
 @RequestMapping(path = "/cidades", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CidadeController implements CidadeControllerOpenApi {
@@ -43,32 +40,14 @@ public class CidadeController implements CidadeControllerOpenApi {
     public CollectionModel<CidadeModel> listar() {
         List<Cidade> todasCidades = cidadeRepository.findAll();
 
-        List<CidadeModel> cidadesModel = cidadeModelAssembler.toCollectionModel(todasCidades);
-
-        cidadesModel.forEach(cidadeModel -> {
-            cidadeModel.add(linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId())).withSelfRel());
-            cidadeModel.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-            cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class).buscar(cidadeModel.getEstado().getId())).withSelfRel());
-        });
-
-        CollectionModel<CidadeModel> cidadesCollectionModel = CollectionModel.of(cidadesModel);
-
-        cidadesCollectionModel.add(linkTo(CidadeController.class).withSelfRel());
-
-        return cidadesCollectionModel;
+        return cidadeModelAssembler.toCollectionModel(todasCidades);
     }
 
     @GetMapping("/{cidadeId}")
     public CidadeModel buscar(@PathVariable Long cidadeId) {
         Cidade cidade = cadastroCidadeService.buscarOuFalhar(cidadeId);
 
-        CidadeModel cidadeModel = cidadeModelAssembler.toModel(cidade);
-
-        cidadeModel.add(linkTo(methodOn(CidadeController.class).buscar(cidadeModel.getId())).withSelfRel());
-        cidadeModel.add(linkTo(methodOn(CidadeController.class).listar()).withRel("cidades"));
-        cidadeModel.getEstado().add(linkTo(methodOn(EstadoController.class).buscar(cidadeModel.getEstado().getId())).withSelfRel());
-
-        return cidadeModel;
+        return cidadeModelAssembler.toModel(cidade);
     }
 
     @PostMapping

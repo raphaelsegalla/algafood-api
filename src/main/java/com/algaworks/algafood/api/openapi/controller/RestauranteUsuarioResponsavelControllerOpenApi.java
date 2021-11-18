@@ -3,8 +3,7 @@ package com.algaworks.algafood.api.openapi.controller;
 import com.algaworks.algafood.api.exceptionhandler.Problem;
 import com.algaworks.algafood.api.model.UsuarioModel;
 import io.swagger.annotations.*;
-
-import java.util.List;
+import org.springframework.hateoas.CollectionModel;
 
 @Api(tags = "Restaurantes")
 public interface RestauranteUsuarioResponsavelControllerOpenApi {
@@ -13,7 +12,7 @@ public interface RestauranteUsuarioResponsavelControllerOpenApi {
     @ApiResponses({
             @ApiResponse(code = 404, message = "Restaurante não encontrado", response = Problem.class)
     })
-    List<UsuarioModel> listar(@ApiParam(value = "ID do restaurante", example = "1", required = true) Long restauranteId);
+    CollectionModel<UsuarioModel> listar(@ApiParam(value = "ID do restaurante", example = "1", required = true) Long restauranteId);
 
     @ApiOperation("Desassociação de restaurante com usuário responsável")
     @ApiResponses({
