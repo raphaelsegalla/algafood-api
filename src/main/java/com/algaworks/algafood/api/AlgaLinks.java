@@ -4,6 +4,7 @@ import com.algaworks.algafood.api.controller.*;
 import org.springframework.hateoas.*;
 import org.springframework.stereotype.Component;
 
+import static org.springframework.hateoas.TemplateVariable.*;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -11,20 +12,20 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 public class AlgaLinks {
 
     public static final TemplateVariables PAGINACAO_VARIABLES = new TemplateVariables(
-            new TemplateVariable("page", TemplateVariable.VariableType.REQUEST_PARAM),
-            new TemplateVariable("size", TemplateVariable.VariableType.REQUEST_PARAM),
-            new TemplateVariable("sort", TemplateVariable.VariableType.REQUEST_PARAM));
+            new TemplateVariable("page", VariableType.REQUEST_PARAM),
+            new TemplateVariable("size", VariableType.REQUEST_PARAM),
+            new TemplateVariable("sort", VariableType.REQUEST_PARAM));
 
     public static final TemplateVariables PROJECAO_VARIABLES = new TemplateVariables(
-            new TemplateVariable("projecao", TemplateVariable.VariableType.REQUEST_PARAM));
+            new TemplateVariable("projecao", VariableType.REQUEST_PARAM));
 
     public Link linkToPedidos(String rel) {
 
         TemplateVariables filtroVariables = new TemplateVariables(
-                new TemplateVariable("clienteId", TemplateVariable.VariableType.REQUEST_PARAM),
-                new TemplateVariable("restauranteId", TemplateVariable.VariableType.REQUEST_PARAM),
-                new TemplateVariable("dataCriacaoInicio", TemplateVariable.VariableType.REQUEST_PARAM),
-                new TemplateVariable("dataCriacaoFim", TemplateVariable.VariableType.REQUEST_PARAM));
+                new TemplateVariable("clienteId", VariableType.REQUEST_PARAM),
+                new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
+                new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
+                new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM));
 
         String pedidosUrl = linkTo(PedidoController.class).toUri().toString();
 
@@ -258,6 +259,23 @@ public class AlgaLinks {
 
     public Link linkToUsuarioGrupoDesassociacao(Long usuarioId, Long grupoId, String rel) {
         return linkTo(methodOn(UsuarioGrupoController.class).desassociar(usuarioId, grupoId)).withRel(rel);
+    }
+
+    public Link linkToEstatisticas(String rel) {
+        return linkTo(EstatisticasController.class).withRel(rel);
+    }
+
+    public Link linkToEstatisticasVendasDiarias(String rel) {
+        TemplateVariables filtroVariables = new TemplateVariables(
+                new TemplateVariable("restauranteId", VariableType.REQUEST_PARAM),
+                new TemplateVariable("dataCriacaoInicio", VariableType.REQUEST_PARAM),
+                new TemplateVariable("dataCriacaoFim", VariableType.REQUEST_PARAM),
+                new TemplateVariable("timeOffset", VariableType.REQUEST_PARAM));
+
+        String pedidosUrl = linkTo(methodOn(EstatisticasController.class)
+                .consultarVendasDiarias(null, null)).toUri().toString();
+
+        return new Link(UriTemplate.of(pedidosUrl, filtroVariables), rel);
     }
 
 }
