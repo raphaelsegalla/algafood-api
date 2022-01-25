@@ -1,9 +1,7 @@
 package com.algaworks.algafood.core.springfox;
 
 import com.algaworks.algafood.api.exceptionhandler.Problem;
-import com.algaworks.algafood.api.model.CidadeModel;
-import com.algaworks.algafood.api.model.CozinhaModel;
-import com.algaworks.algafood.api.model.PedidoResumoModel;
+import com.algaworks.algafood.api.model.*;
 import com.algaworks.algafood.api.openapi.model.*;
 import com.fasterxml.classmate.TypeResolver;
 import org.springframework.context.annotation.Bean;
@@ -14,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.Links;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.ServletWebRequest;
@@ -72,9 +71,17 @@ public class SpringFoxConfig implements WebMvcConfigurer {
                 .ignoredParameterTypes(ServletWebRequest.class, URL.class, URI.class, URLStreamHandler.class, Resource.class, File.class, InputStream.class)
                 .directModelSubstitute(Pageable.class, PageableModelOpenApi.class)
                 .directModelSubstitute(Links.class, LinksModelOpenApi.class)
-                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, CozinhaModel.class), CozinhasModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, CozinhaModel.class), CozinhasModelOpenApi.class))
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(Page.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
                 .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, CidadeModel.class), CidadesModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, EstadoModel.class), EstadosModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, FormaPagamentoModel.class), FormasPagamentoModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, GrupoModel.class), GruposModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, PermissaoModel.class), PermissoesModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(PagedModel.class, PedidoResumoModel.class), PedidosResumoModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, ProdutoModel.class), ProdutosModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, RestauranteBasicoModel.class), RestaurantesBasicoModelOpenApi.class))
+                .alternateTypeRules(AlternateTypeRules.newRule(typeResolver.resolve(CollectionModel.class, UsuarioModel.class), UsuariosModelOpenApi.class))
                 .apiInfo(apiInfo())
                 .tags(
                         new Tag("Cidades", "Gerencia as cidades"),
