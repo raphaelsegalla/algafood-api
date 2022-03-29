@@ -17,7 +17,7 @@ public class ResourceServerConfig extends WebSecurityConfigurerAdapter {
                 .and()
                     .cors()
                 .and()
-                    .oauth2ResourceServer().opaqueToken();
+                    .oauth2ResourceServer().jwt();
     }
 
 }
