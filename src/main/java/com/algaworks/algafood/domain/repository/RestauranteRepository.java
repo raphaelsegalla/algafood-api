@@ -34,4 +34,6 @@ public interface RestauranteRepository extends CustomJpaRepository<Restaurante, 
 
     List<Restaurante> consultarPorNomeXml(String nome, @Param("id") Long cozinhaId);
 
+    boolean existsResponsavel(Long restauranteId, Long usuarioId);
+
 }
