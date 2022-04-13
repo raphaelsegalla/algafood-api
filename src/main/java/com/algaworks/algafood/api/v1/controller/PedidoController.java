@@ -67,6 +67,7 @@ public class PedidoController implements PedidoControllerOpenApi {
 //        return pedidosResumoModelPage;
 //    }
 
+    @CheckSecurity.Pedidos.PodePesquisar
     @Override
     @GetMapping
     public PagedModel<PedidoResumoModel> pesquisar(PedidoFilter filtro, @PageableDefault(size = 10) Pageable pageable) {
